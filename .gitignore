@@ -1,3 +1,5 @@
 /target
 Cargo.lock
 /lm-sensors*
+/.vscode/
+/*.code-workspace
