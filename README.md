@@ -60,7 +60,7 @@ This crate provides the following variables to other crates that depend on it:
 - `DEP_LMSENSORS_INCLUDE`: Path of the directory where library C header files reside.
 - `DEP_LMSENSORS_LIB`: Path of the directory where the library binary resides.
 
-# Documentation-only build mode
+## Documentation-only build mode
 
 The *documentation-only* build mode allows building documentation even if
 `libsensors` and its headers are unavailable.
