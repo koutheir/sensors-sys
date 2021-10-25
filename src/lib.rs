@@ -1,5 +1,5 @@
 #![cfg(all(target_os = "linux", not(target_env = "kernel")))]
-#![doc(html_root_url = "https://docs.rs/sensors-sys/0.2.0")]
+#![doc(html_root_url = "https://docs.rs/sensors-sys/0.2.1")]
 
 /*!
 # `sensors-sys`: Unsafe Rust bindings for `libsensors`
@@ -59,6 +59,19 @@ This behavior can be changed by:
 This crate provides the following variables to other crates that depend on it:
 - `DEP_LMSENSORS_INCLUDE`: Path of the directory where library C header files reside.
 - `DEP_LMSENSORS_LIB`: Path of the directory where the library binary resides.
+
+# Documentation-only build mode
+
+The *documentation-only* build mode allows building documentation even if
+`libsensors` and its headers are unavailable.
+To build in this mode, set the environment variable `DOCS_RS` to `1`:
+```bash
+$ env DOCS_RS=1 cargo doc --open
+```
+
+The generated documentation is based on `libsensors` version `3.6.0`.
+
+> ⚠️ The generated crate might be **unusable** in this mode.
 
 ## Versioning
 

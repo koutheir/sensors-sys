@@ -1,8 +1,18 @@
-use std::ffi::OsString;
+use std::ffi::{OsStr, OsString};
 use std::path::{Path, PathBuf};
 use std::{env, io, process, str};
 
 use walkdir::WalkDir;
+
+static HEADER: &str = r#"
+#include <sensors/sensors.h>
+#include <sensors/error.h>
+"#;
+
+static HEADER_DOCS_RS: &str = r#"
+#include "src/libsensors-3.6.0/sensors.h"
+#include "src/libsensors-3.6.0/error.h"
+"#;
 
 fn main() {
     let target =
@@ -21,10 +31,30 @@ fn main() {
     let explicit_static = get_static_linking(&target);
     let compiler_search_paths = get_compiler_search_paths(&target);
 
-    find_and_output_include_dir(&compiler_search_paths.include_paths);
-    find_and_output_lib_dir(&compiler_search_paths.link_paths, &target, explicit_static);
+    let docs_only_mode = Some(OsStr::new("1")) == env::var_os("DOCS_RS").as_deref();
+    if docs_only_mode {
+        println!(
+            "cargo:warning=sensors-sys: Documentation-only mode. Generated crate might be UNUSABLE."
+        );
+    }
 
-    generate_bindings(&out_dir)
+    find_and_output_include_dir(&compiler_search_paths.include_paths, docs_only_mode);
+
+    find_and_output_lib_dir(
+        &compiler_search_paths.link_paths,
+        &target,
+        explicit_static,
+        docs_only_mode,
+    );
+
+    generate_bindings(
+        &out_dir,
+        if docs_only_mode {
+            HEADER_DOCS_RS
+        } else {
+            HEADER
+        },
+    )
 }
 
 fn path_to_str(path: &Path) -> &str {
@@ -205,11 +235,11 @@ fn rerun_if_env_changed(name: &str, target: &str) {
     println!("cargo:rerun-if-env-changed={}", name);
 }
 
-fn rerun_if_dir_changed(dir: &Path) {
+fn rerun_if_dir_changed(dir: &Path, must_exist: bool) {
     for file in WalkDir::new(dir).follow_links(false).same_file_system(true) {
         if let Ok(file) = file {
             println!("cargo:rerun-if-changed={}", file.path().display());
-        } else {
+        } else if must_exist {
             panic!(
                 "sensors-sys: Failed to list directory contents: {}",
                 dir.display()
@@ -218,11 +248,16 @@ fn rerun_if_dir_changed(dir: &Path) {
     }
 }
 
-fn find_and_output_include_dir(include_paths: &[PathBuf]) -> PathBuf {
-    let include_path = find_file_in_dirs("sensors/sensors.h", include_paths)
-        .expect("sensors-sys: Failed to find 'sensors/sensors.h'");
+fn find_and_output_include_dir(include_paths: &[PathBuf], docs_only_mode: bool) -> PathBuf {
+    let include_path = find_file_in_dirs("sensors/sensors.h", include_paths);
 
-    rerun_if_dir_changed(&include_path.join("sensors"));
+    let include_path = if docs_only_mode {
+        include_path.unwrap_or_else(|_| PathBuf::from("/inexistent"))
+    } else {
+        include_path.expect("sensors-sys: Failed to find 'sensors/sensors.h'")
+    };
+
+    rerun_if_dir_changed(&include_path.join("sensors"), !docs_only_mode);
 
     println!("cargo:include={}", path_to_str(&include_path));
 
@@ -242,7 +277,12 @@ fn output_lib_dir(dir: &Path, file: &Path, static_lib: bool) {
     );
 }
 
-fn find_and_output_lib_dir(link_paths: &[PathBuf], target: &str, explicit_static: Option<bool>) {
+fn find_and_output_lib_dir(
+    link_paths: &[PathBuf],
+    target: &str,
+    explicit_static: Option<bool>,
+    docs_only_mode: bool,
+) {
     let lib_configs = match explicit_static {
         Some(false) => vec![false],
 
@@ -257,7 +297,7 @@ fn find_and_output_lib_dir(link_paths: &[PathBuf], target: &str, explicit_static
         }
     };
 
-    for static_lib in lib_configs {
+    for &static_lib in &lib_configs {
         let file_name = format!("libsensors{}", if static_lib { ".a" } else { ".so" });
 
         if let Ok(lib_path) = find_file_in_dirs(&file_name, link_paths) {
@@ -283,9 +323,17 @@ fn find_and_output_lib_dir(link_paths: &[PathBuf], target: &str, explicit_static
             }
         }
     }
+
+    if docs_only_mode {
+        output_lib_dir(
+            Path::new("/inexistent"),
+            Path::new("/inexistent"),
+            lib_configs[0],
+        );
+    }
 }
 
-fn generate_bindings(out_dir: &Path) {
+fn generate_bindings(out_dir: &Path, header: &str) {
     let mut builder = bindgen::Builder::default()
         .rustfmt_bindings(true)
         .default_enum_style(bindgen::EnumVariation::ModuleConsts)
@@ -317,7 +365,7 @@ fn generate_bindings(out_dir: &Path) {
     builder = builder.allowlist_function("^sensors_.+$");
 
     // Include all LM Sensors headers.
-    builder = builder.header("src/sensors-sys.h");
+    builder = builder.header_contents("sensors-sys.h", header);
 
     let bindings = builder.generate().expect(
         "sensors-sys: Failed to generate Rust bindings for 'sensors/sensors.h' and other headers",
