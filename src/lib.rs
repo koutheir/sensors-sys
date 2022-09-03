@@ -1,5 +1,5 @@
 #![cfg(all(target_os = "linux", not(target_env = "kernel")))]
-#![doc(html_root_url = "https://docs.rs/sensors-sys/0.2.1")]
+#![doc(html_root_url = "https://docs.rs/sensors-sys/0.2.2")]
 
 /*!
 # `sensors-sys`: Unsafe Rust bindings for `libsensors`

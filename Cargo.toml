@@ -1,13 +1,20 @@
+# https://rust-lang.github.io/api-guidelines/checklist.html
+
 [package]
 name = "sensors-sys"
 description = "Hardware monitoring in Linux"
-version = "0.2.1" # Remember to update `html_root_url`.
+version = "0.2.2" # Remember to update version in `html_root_url`.
 authors = ["Koutheir Attouchi <koutheir@gmail.com>"]
 edition = "2021"
 readme = "README.md"
 license = "MIT"
-keywords = [ "ffi", "bindings", "sensor", "linux", "monitoring" ]
-categories = [ "external-ffi-bindings", "os", "os::linux-apis", "hardware-support" ]
+keywords = ["ffi", "bindings", "sensor", "linux", "monitoring"]
+categories = [
+    "external-ffi-bindings",
+    "os",
+    "os::linux-apis",
+    "hardware-support",
+]
 build = "build.rs"
 links = "sensors"
 repository = "https://github.com/koutheir/sensors-sys"
@@ -16,8 +23,8 @@ documentation = "https://docs.rs/sensors-sys"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
-bindgen = { version = "0.59" }
-walkdir = { version = "2.3"  }
+bindgen = { version = "0.60" }
+walkdir = { version = "2.3" }
 dunce   = { version = "1.0" }
 cc      = { version = "1.0" }
 

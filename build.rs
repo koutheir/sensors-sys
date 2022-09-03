@@ -223,7 +223,7 @@ fn target_env_var_os(name: &str, target: &str) -> Option<OsString> {
     env::var_os(format!("{}_{}", name, target))
         .or_else(|| env::var_os(format!("{}_{}", name, target_underscores)))
         .or_else(|| env::var_os(format!("TARGET_{}", name)))
-        .or_else(|| env::var_os(name.to_string()))
+        .or_else(|| env::var_os(name))
 }
 
 fn rerun_if_env_changed(name: &str, target: &str) {
