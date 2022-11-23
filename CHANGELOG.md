@@ -2,6 +2,12 @@
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.4] - 2022-11-22
+
+### Changed
+
+- Updated dependencies: `bindgen`.
+
 ## [0.2.3] - 2022-11-20
 
 ### Changed
