@@ -220,19 +220,19 @@ fn target_env_var_os(name: &str, target: &str) -> Option<OsString> {
 
     let target_underscores = target.replace('-', "_");
 
-    env::var_os(format!("{}_{}", name, target))
-        .or_else(|| env::var_os(format!("{}_{}", name, target_underscores)))
-        .or_else(|| env::var_os(format!("TARGET_{}", name)))
+    env::var_os(format!("{name}_{target}"))
+        .or_else(|| env::var_os(format!("{name}_{target_underscores}")))
+        .or_else(|| env::var_os(format!("TARGET_{name}")))
         .or_else(|| env::var_os(name))
 }
 
 fn rerun_if_env_changed(name: &str, target: &str) {
     let target_underscores = target.replace('-', "_");
 
-    println!("cargo:rerun-if-env-changed={}_{}", name, target);
-    println!("cargo:rerun-if-env-changed={}_{}", name, target_underscores);
-    println!("cargo:rerun-if-env-changed=TARGET_{}", name);
-    println!("cargo:rerun-if-env-changed={}", name);
+    println!("cargo:rerun-if-env-changed={name}_{target}");
+    println!("cargo:rerun-if-env-changed={name}_{target_underscores}");
+    println!("cargo:rerun-if-env-changed=TARGET_{name}");
+    println!("cargo:rerun-if-env-changed={name}");
 }
 
 fn rerun_if_dir_changed(dir: &Path, must_exist: bool) {
@@ -311,7 +311,7 @@ fn find_and_output_lib_dir(
             for &lib_dir in &[
                 link_path,
                 &link_path.join(target),
-                &link_path.join(&triplet),
+                &link_path.join(triplet),
             ] {
                 let lib_path = lib_dir.join(&file_name);
                 if let Ok(md) = lib_path.metadata() {
@@ -335,7 +335,6 @@ fn find_and_output_lib_dir(
 
 fn generate_bindings(out_dir: &Path, header: &str) {
     let mut builder = bindgen::Builder::default()
-        .rustfmt_bindings(true)
         .default_enum_style(bindgen::EnumVariation::ModuleConsts)
         .default_macro_constant_type(bindgen::MacroTypeVariation::Signed)
         .size_t_is_usize(true)
