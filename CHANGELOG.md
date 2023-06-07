@@ -2,6 +2,12 @@
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.6] - 2023-06-07
+
+### Changed
+
+- Updated build script to better integrate with `cargo`.
+
 ## [0.2.5] - 2023-04-18
 
 ### Changed
