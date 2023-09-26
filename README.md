@@ -10,6 +10,28 @@ in Linux.
 This crate is Linux-specific. Building it for non-Linux platforms, or for
 the Linux kernel, results in an empty crate.
 
+This crate links to [`libsensors`](https://github.com/lm-sensors/lm-sensors), and requires it to be
+installed.
+See below for example installation instructions.
+
+## Installing `libsensors`
+
+This crate links to [`libsensors`](https://github.com/lm-sensors/lm-sensors), and requires it to be
+installed.
+
+The library, its C header files, and the `clang` compiler need to be installed on the **build machine**.
+On Debian, for example, one can install that as follows:
+```sh
+$ sudo apt install clang libsensors-dev
+```
+
+If the library is linked dynamically (most typical configuration), then it needs to be installed
+on the target computer in order to run the resulting program.
+On Debian, for example, one can install it as follows:
+```sh
+$ sudo apt install libsensors5
+```
+
 ## Supported environment variables
 
 This crate depends on some environment variables, and *variants* of those.
