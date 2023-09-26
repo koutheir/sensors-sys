@@ -254,7 +254,7 @@ fn find_and_output_include_dir(include_paths: &[PathBuf], docs_only_mode: bool) 
     let include_path = if docs_only_mode {
         include_path.unwrap_or_else(|_| PathBuf::from("/inexistent"))
     } else {
-        include_path.expect("sensors-sys: Failed to find 'sensors/sensors.h'")
+        include_path.expect("sensors-sys: Failed to find 'sensors/sensors.h'. Please make sure the C header files of libsensors are installed and accessible")
     };
 
     rerun_if_dir_changed(&include_path.join("sensors"), !docs_only_mode);
