@@ -62,9 +62,9 @@ If both are defined, then the value of `LMSENSORS_STATIC` takes precedence.
 
 Setting `LMSENSORS_STATIC` to `0` mandates dynamic linking.
 
-## Finding SELinux library and headers
+## Finding lm-sensors library and headers
 
-By default, this crate finds SELinux headers and library based on the default
+By default, this crate finds lm-sensors headers and library based on the default
 target C compiler.
 
 This behavior can be changed by:

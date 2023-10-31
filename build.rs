@@ -308,11 +308,7 @@ fn find_and_output_lib_dir(
         if let Some(link_path) = link_paths.get(0) {
             let triplet = target.replace("-unknown-", "-").replace("-none-", "-");
 
-            for &lib_dir in &[
-                link_path,
-                &link_path.join(target),
-                &link_path.join(triplet),
-            ] {
+            for &lib_dir in &[link_path, &link_path.join(target), &link_path.join(triplet)] {
                 let lib_path = lib_dir.join(&file_name);
                 if let Ok(md) = lib_path.metadata() {
                     if md.is_file() {
