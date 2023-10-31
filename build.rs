@@ -38,7 +38,7 @@ fn main() {
         );
     }
 
-    find_and_output_include_dir(&compiler_search_paths.include_paths, docs_only_mode);
+    let include_path = find_and_output_include_dir(&compiler_search_paths.include_paths, docs_only_mode);
 
     find_and_output_lib_dir(
         &compiler_search_paths.link_paths,
@@ -54,6 +54,7 @@ fn main() {
         } else {
             HEADER
         },
+        &include_path
     )
 }
 
@@ -333,7 +334,7 @@ fn find_and_output_lib_dir(
     }
 }
 
-fn generate_bindings(out_dir: &Path, header: &str) {
+fn generate_bindings(out_dir: &Path, header: &str, include_path: &PathBuf) {
     let mut builder = bindgen::Builder::default()
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .default_enum_style(bindgen::EnumVariation::ModuleConsts)
@@ -343,7 +344,8 @@ fn generate_bindings(out_dir: &Path, header: &str) {
         .derive_copy(true)
         .derive_eq(true)
         .derive_ord(true)
-        .impl_debug(true);
+        .impl_debug(true)
+        .clang_arg(format!("-I/{}", include_path.to_string_lossy()));
 
     // Make the `FILE` type opaque, so bindgen does not pull other types from the
     // standard library.
