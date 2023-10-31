@@ -2,6 +2,15 @@
 
 This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.10] - 2023-10-31
+
+### Changed
+
+- When include and/or link paths are specified explicitly, these paths must be provided to all
+  compiler instances, both when discovering compiler paths, and when executing `bindgen`.
+
+Thank you very much, *wiiznokes*.
+
 ## [0.2.8] - 2023-09-26
 
 ### Added
