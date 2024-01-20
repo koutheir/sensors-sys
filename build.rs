@@ -318,7 +318,7 @@ fn find_and_output_lib_dir(
             return;
         }
 
-        if let Some(link_path) = link_paths.get(0) {
+        if let Some(link_path) = link_paths.first() {
             let triplet = target.replace("-unknown-", "-").replace("-none-", "-");
 
             for &lib_dir in &[link_path, &link_path.join(target), &link_path.join(triplet)] {
@@ -344,7 +344,7 @@ fn find_and_output_lib_dir(
 
 fn generate_bindings(out_dir: &Path, include_path: &Path, header: &str) {
     let mut builder = bindgen::Builder::default()
-        .parse_callbacks(Box::new(bindgen::CargoCallbacks))
+        .parse_callbacks(Box::new(bindgen::CargoCallbacks::new()))
         .default_enum_style(bindgen::EnumVariation::ModuleConsts)
         .default_macro_constant_type(bindgen::MacroTypeVariation::Signed)
         .size_t_is_usize(true)
