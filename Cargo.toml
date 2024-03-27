@@ -1,30 +1,32 @@
 # https://rust-lang.github.io/api-guidelines/checklist.html
 
 [package]
-name = "sensors-sys"
-description = "Hardware monitoring in Linux"
-version = "0.2.11" # Remember to update version in `html_root_url`.
-authors = ["Koutheir Attouchi <koutheir@gmail.com>"]
-edition = "2021"
-readme = "README.md"
-license = "MIT"
-keywords = ["ffi", "bindings", "sensor", "linux", "monitoring"]
+name          = "sensors-sys"
+description   = "Hardware monitoring in Linux"
+version       = "0.2.12"                                             # Remember to update version in `html_root_url`.
+authors       = ["Koutheir Attouchi <koutheir@gmail.com>"]
+edition       = "2021"
+readme        = "README.md"
+license       = "MIT"
+keywords      = ["ffi", "bindings", "sensor", "linux", "monitoring"]
+build         = "build.rs"
+links         = "sensors"
+documentation = "https://docs.rs/sensors-sys"
+homepage      = "https://codeberg.org/koutheir/sensors-sys.git"
+repository    = "https://codeberg.org/koutheir/sensors-sys.git"
+
 categories = [
     "external-ffi-bindings",
     "os",
     "os::linux-apis",
     "hardware-support",
 ]
-build = "build.rs"
-links = "sensors"
-repository = "https://github.com/koutheir/sensors-sys"
-documentation = "https://docs.rs/sensors-sys"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [build-dependencies]
 bindgen = { version = "0.69" }
-walkdir = { version = "2.4" }
+walkdir = { version = "2.5" }
 dunce   = { version = "1.0" }
 cc      = { version = "1.0" }
 
